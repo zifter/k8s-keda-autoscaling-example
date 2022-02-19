@@ -1,0 +1,88 @@
+repositories:
+- name: ingress-nginx
+  url: https://kubernetes.github.io/ingress-nginx
+- name: prometheus-community
+  url: https://prometheus-community.github.io/helm-charts
+- name: zifter
+  url: https://zifter.github.io/helm-charts/
+- name: kedacore
+  url: https://kedacore.github.io/charts
+
+helmDefaults:
+  wait: true
+  timeout: 300
+
+releases:
+  - name: prometheus-stack
+    namespace: monitoring
+    chart: prometheus-community/kube-prometheus-stack
+    version: 23.2.0
+    values:
+      - releases/prometheus-stack/values.yaml
+
+  - name: ingress-nginx
+    namespace: kube-system
+    chart: ingress-nginx/ingress-nginx
+    version: 3.36.0
+    needs:
+      - prometheus-stack
+    values:
+      - releases/ingress-nginx/values.yaml
+
+  - name: keda
+    namespace: kube-system
+    chart: kedacore/keda
+    version: 2.5.1
+    values:
+      - releases/keda/values.yaml
+    needs:
+     - prometheus-stack
+
+  - name: redis
+    namespace: default
+    chart: bitnami/redis
+    version: 15.5.1
+    values:
+      - releases/redis/values.yaml
+
+  - name: redis-exporter
+    namespace: monitoring
+    chart: prometheus-community/prometheus-redis-exporter
+    version: 4.6.0
+    needs:
+      - prometheus-stack
+    values:
+      - releases/redis-exporter/values.yaml
+
+  - name: rq-exporter
+    namespace: monitoring
+    chart: zifter/rq-exporter
+    version: 0.1.0
+    needs:
+      - prometheus-stack
+    values:
+      - releases/rq-exporter/values.yaml
+
+  - name: site
+    namespace: default
+    chart: charts/site
+    values:
+      - releases/site/values.yaml
+
+  - name: worker-slow
+    namespace: default
+    chart: charts/worker
+    needs:
+      - keda
+    values:
+      - releases/worker/values.yaml
+      - releases/worker/values-slow.yaml
+
+  - name: worker-fast
+    namespace: default
+    chart: charts/worker
+    needs:
+      - keda
+    values:
+      - releases/worker/values.yaml
+      - releases/worker/values-fast.yaml

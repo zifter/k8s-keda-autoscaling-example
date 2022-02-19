@@ -1,0 +1,5 @@
+rqQueues:
+  - slow
+
+autoscalingKEDA:
+  threshold: 1

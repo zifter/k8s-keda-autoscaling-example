@@ -1,0 +1,10 @@
+image:
+  pullPolicy: "Always"
+
+ingress:
+  enabled: true
+  hosts:
+    - host: localhost
+      paths:
+        - path: /
+          pathType: Prefix

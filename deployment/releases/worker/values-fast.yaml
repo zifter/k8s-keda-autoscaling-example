@@ -1,0 +1,5 @@
+rqQueues:
+  - fast
+
+autoscalingKEDA:
+  threshold: 20

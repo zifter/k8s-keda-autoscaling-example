@@ -1,0 +1,3 @@
+rq:
+  - name: rq
+    host: redis-master.default.svc

@@ -1,0 +1,34 @@
+configmap: |-
+  appendonly no
+  save ""
+
+architecture: standalone
+auth:
+  enabled: false
+
+cluster:
+  enabled: false
+
+serviceAccount:
+  create: true
+  name: redis
+
+master:
+  service:
+    type: NodePort
+    nodePort: 30102
+
+  persistence:
+    enabled: false
+
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "150Mi"
+    limits:
+      memory: "150Mi"
+
+
+replica:
+  persistence:
+    enabled: false

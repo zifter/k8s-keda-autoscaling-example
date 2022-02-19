@@ -1,0 +1,27 @@
+controller:
+  autoscaling:
+    enabled: false
+
+  service:
+    type: NodePort
+
+  nodeSelector:
+    ingress-ready: "true"
+    kubernetes.io/os: linux
+
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      namespace: "monitoring"
+
+  tolerations:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/master
+      operator: Equal
+
+  hostPort:
+    enabled: true
+
+  updateStrategy:
+    type: Recreate
