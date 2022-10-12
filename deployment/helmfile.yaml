@@ -25,7 +25,7 @@ releases:
     chart: ingress-nginx/ingress-nginx
     version: 3.36.0
     needs:
-      - prometheus-stack
+      - monitoring/prometheus-stack
     values:
       - releases/ingress-nginx/values.yaml
 
@@ -36,12 +36,12 @@ releases:
     values:
       - releases/keda/values.yaml
     needs:
-     - prometheus-stack
+     - monitoring/prometheus-stack
 
   - name: redis
     namespace: default
     chart: bitnami/redis
-    version: 15.5.1
+    version: 15.7.0
     values:
       - releases/redis/values.yaml
 
@@ -73,7 +73,7 @@ releases:
     namespace: default
     chart: charts/worker
     needs:
-      - keda
+      - kube-system/keda
     values:
       - releases/worker/values.yaml
       - releases/worker/values-slow.yaml
@@ -82,7 +82,7 @@ releases:
     namespace: default
     chart: charts/worker
     needs:
-      - keda
+      - kube-system/keda
     values:
       - releases/worker/values.yaml
       - releases/worker/values-fast.yaml
